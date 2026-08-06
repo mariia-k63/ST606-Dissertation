@@ -1,0 +1,7 @@
+"","RMSE","MAE","MAPE"
+"Training",1.189,0.928,8.909
+"CV step = 1",1.212,0.952,8.856
+"CV step = 6",1.265,0.996,9.282
+"CV step = 12 (1 year forecast)",1.257,0.989,9.199
+"CV step = 12 (2 year forecast)",1.265,0.988,9.236
+"CV step = 12 (3 year forecast)",1.291,1.012,9.431
