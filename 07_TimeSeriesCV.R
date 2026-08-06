@@ -74,8 +74,8 @@ s12_ets3 <- stretch_12_3 %>%
 
 # --- Function for obtaining the results of cross-validation ---
 results <- function(train, cv){
-  res <- data.frame(rbind(select(train, "RMSE", "MAE", "MAPE"), 
-                          select(cv, "RMSE", "MAE", "MAPE")))
+  res <- data.frame(rbind(dplyr::select(train, "RMSE", "MAE", "MAPE"), 
+                          dplyr::select(cv, "RMSE", "MAE", "MAPE")))
   
   res <- round(res, digits = 3)
   
@@ -93,7 +93,7 @@ cv_results_ets <- rbind(s1_ets, s6_ets, s12_ets, s12_ets2, s12_ets3)
 ets_models <- results(training_ets, cv_results_ets)
 ets_models
 
-# write.csv(ets_models, "results/ets_cv_1.csv", row.names = TRUE)
+# write.csv(ets_models, "TS_Results/ets_cv_1.csv", row.names = TRUE)
 
 
 
@@ -133,7 +133,7 @@ cv_results_arima <- rbind(s1_arima, s6_arima, s12_arima, s12_arima2, s12_arima3)
 arima_models <- results(train_arima, cv_results_arima)
 arima_models
 
-write.csv(arima_models, "results/arima_cv.csv", row.names = TRUE)
+# write.csv(arima_models, "TS_Results/arima_cv.csv", row.names = TRUE)
 
 
 
@@ -158,22 +158,18 @@ temp_rain_test <- temp_rain %>% filter(year(Month) > 2022 & year(Month) < 2026)
 # Training the model on 10 years of data
 sarima_lm <- temp_rain_train %>% 
   model(ARIMA(MaxTemp ~ Rain + pdq(1,0,0) + PDQ(2,1,0)))
-lm_arima_train_acc <- sarima_lm %>% accuracy() %>% select(RMSE, MAE, MAPE)
+lm_arima_train_acc <- sarima_lm %>% accuracy() %>% dplyr::select(RMSE, MAE, MAPE)
 
 # Testing on the left out 3 years
 lm_arima_test_acc <- forecast(sarima_lm, temp_rain_test) %>% 
-  accuracy(temp_rain_test) %>%  select(RMSE, MAE, MAPE)
+  accuracy(temp_rain_test) %>%  dplyr::select(RMSE, MAE, MAPE)
 
 lm_arima_results <- data.frame(rbind(lm_arima_train_acc, lm_arima_test_acc))
 lm_arima_results <- round(lm_arima_results, digits = 3)
 rownames(lm_arima_results) <- c("Training", "Test")
 lm_arima_results
 
-# write.csv(lm_arima_results, "results/lm_arima.csv", row.names = TRUE)
-
-
-forecast(sarima_lm, temp_rain_test) %>% autoplot(level = 95) +
-  autolayer(temp_rain_train) + autolayer(temp_rain_test)
+# write.csv(lm_arima_results, "TS_Results/lm_arima.csv", row.names = TRUE)
 
 
 
@@ -198,7 +194,7 @@ ets_res <-  data.frame(rbind(train_acc_ets, test_acc_ets))
 ets_res <- round(ets_res, digits = 3)
 rownames(ets_res) <- c("Training", "Test")
 
-# write.csv(ets_res, "results/ets.csv", row.names = TRUE)
+# write.csv(ets_res, "TS_Results/ets.csv", row.names = F)
 
 
 
@@ -219,4 +215,4 @@ sarima_res <- round(sarima_res, digits = 3)
 rownames(sarima_res) <- c("Training", "Test")
 sarima_res
 
-# write.csv(sarima_res, "results/sarima.csv", row.names = TRUE)
+# write.csv(sarima_res, "TS_Results/sarima.csv", row.names = F)
