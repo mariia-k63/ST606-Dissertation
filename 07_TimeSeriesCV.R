@@ -197,6 +197,13 @@ rownames(ets_res) <- c("Training", "Test")
 # write.csv(ets_res, "TS_Results/ets.csv", row.names = F)
 
 
+# ETS forecast plot
+ets_forecast <- ets_aaa  %>%  forecast(h = "3 years") %>% 
+  autoplot(maxtp_train, level = 95) +
+  labs(y="Maximum Temperature", title="Monthly Mean Maximum Temperature") +
+  autolayer(maxtp_test, colour = "black")
+
+# ggsave("Plots/ETSforecast.png", plot = ets_forecast, width = 10, height = 6, dpi = 300)
 
 
 # --- Baseline performance of the SARIMA model ---
